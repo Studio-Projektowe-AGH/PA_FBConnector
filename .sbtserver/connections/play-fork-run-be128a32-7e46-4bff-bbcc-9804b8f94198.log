@@ -1,0 +1,12 @@
+New log file opened at Mon May 11 13:48:14 CEST 2015 by 7296@Marek-Komputer
+Sending msg to client play-fork-run-be128a32-7e46-4bff-bbcc-9804b8f94198: DetachedLogEvent(LogMessage(debug,sbt server socket logs are in: E:\uczelnia\rogusowe\dataGatherer\.sbtserver\connections\master.log))
+Sending msg to client play-fork-run-be128a32-7e46-4bff-bbcc-9804b8f94198: DetachedLogEvent(LogMessage(debug,sbt client logs are in: E:\uczelnia\rogusowe\dataGatherer\.sbtserver\connections\play-fork-run-be128a32-7e46-4bff-bbcc-9804b8f94198.log))
+Sending msg to client play-fork-run-be128a32-7e46-4bff-bbcc-9804b8f94198: DetachedLogEvent(LogMessage(debug,sbt general server logs are in: E:\uczelnia\rogusowe\dataGatherer\.sbtserver\master.log))
+Reading next message from client.
+Got request: ListenToEvents()
+Reading next message from client.
+Sending msg to client play-fork-run-be128a32-7e46-4bff-bbcc-9804b8f94198: (3,ReceivedResponse())
+Client play-fork-run-be128a32-7e46-4bff-bbcc-9804b8f94198 closed, java.net.SocketException: Connection reset, shutting down
+Stopping client.
+Client play-fork-run-be128a32-7e46-4bff-bbcc-9804b8f94198 thread exiting.
+Dropping message (0,ReceivedResponse()) to dead client play-fork-run-be128a32-7e46-4bff-bbcc-9804b8f94198
