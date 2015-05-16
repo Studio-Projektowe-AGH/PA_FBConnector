@@ -1,72 +1,113 @@
 package controllers;
 
-import controllers.fb.GET;
-import controllers.fb.Queries;
+import com.fasterxml.jackson.databind.JsonNode;
+import controllers.fb.business.AboutResponse;
+import controllers.fb.business.PictureResponse;
+import controllers.fb.QueryFactory;
+import controllers.gp.business.Response;
+import play.libs.Json;
 import play.libs.ws.WS;
 import play.libs.ws.WSRequestHolder;
 import play.libs.ws.WSResponse;
+import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result;
-import views.html.index;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Map;
 
 public class Application extends Controller {
 
-    private static final long TIMEOOUT = 5000;
-    private static final ArrayList<String> REQUIRED = new ArrayList<>(Collections.singletonList("token"));
-    private static final ArrayList<String> SUPPORTED = new ArrayList<>(Arrays.asList(
-            "birthday","gender","installed","picture"
-    ));
+    private static final long TIMEOUT = 5000;
+    private static final String FB_TOKEN = "fbToken";
+    private static final String GP_TOKEN = "gpToken";
+    private static final HashSet<String> REQUIRED = new HashSet<>(Arrays.asList(FB_TOKEN, GP_TOKEN));
 
-    public static Result index() {
-        return ok(index.render("Your new application is ready."));
-    }
-
-    public static Result user() {//String token, String fields, String id) {
+    @BodyParser.Of(BodyParser.FormUrlEncoded.class)
+    public static Result business() {
         Map<String, String[]> params = request().body().asFormUrlEncoded();
 
         if (!REQUIRED.parallelStream().allMatch(params::containsKey)) {
-            return badRequest(Arrays.toString(REQUIRED.toArray()) + " parameters are required");
+            badRequest(REQUIRED.removeAll(params.keySet()) + " fields is required");
         }
 
-        String id = takeParam(params, "id", "me");
-        WSRequestHolder holder = WS.url("https://graph.facebook.com/" + id)
-                .setQueryParameter("access_token", params.get("token")[0]);
+        WSRequestHolder info = WS.url("https://graph.facebook.com/")
+                .setQueryParameter("access_token", params.get(FB_TOKEN)[0])
+                .setQueryParameter("locale", "pl_PL")
+                .setQueryParameter("include_headers", "false");
 
+        ArrayList<Object> queries = new ArrayList<>();
+        QueryFactory queryFactory = QueryFactory.getFactory();
 
-        String fields = takeParam(params, "fields", "birthday,gender,installed");
-        HashSet<String> strings = new HashSet<>(Arrays.asList(fields.split(",")));
-        if (!SUPPORTED.parallelStream().allMatch(strings::contains)) {
-            strings.removeAll(SUPPORTED);
-            return badRequest(Arrays.toString(strings.toArray()) + " fields are not supported");
+        queries.add(queryFactory.get(
+                "me?fields=name,category_list{name},about," +
+                        "location{country,city,street,latitude,longitude},website,phone"
+        ));
+        queries.add(queryFactory.get(
+                "me/picture?type=large&redirect=false"
+        ));
+
+        info.setQueryParameter("batch", Json.toJson(queries).toString());
+
+        WSResponse wsResponse = info.post("").get(TIMEOUT);
+
+        JsonNode responseJson = wsResponse.asJson();
+
+        for (JsonNode node : responseJson) {
+            if (node.get("code").asInt() != 200) {
+                return internalServerError("FB hasn't responded with 200 code on node " + node.toString());
+            }
         }
 
-        ArrayList<Queries> queries = new ArrayList<>();
-        if (strings.remove("photo")) {
-            queries.add(new GET(id + "/picture?redirect=false"));
-        }
+        AboutResponse   about   = Json.fromJson(Json.parse(responseJson.get(0).get("body").asText()), AboutResponse.class);
+        PictureResponse picture = Json.fromJson(Json.parse(responseJson.get(1).get("body").asText()).get("data"), PictureResponse.class);
+        Response response = new Response(about, picture);
 
-        holder = holder.setQueryParameter("fields", fields);
-        WSResponse wsResponse = holder.get().get(TIMEOOUT);
-        return ok(wsResponse.asByteArray());
-//
-//        F.Promise<F.Either<WSResponse, WSResponse>> eitherPromise = holder.get().or(user.get());
-//
-//        F.Either<WSResponse, WSResponse> asd = eitherPromise.get(25000);
-//
-//        if (asd.left.isDefined())
-//            return ok(new String(asd.left.get().asByteArray()));
-//        else
-//            return ok(new String(asd.right.get().asByteArray()));
+
+
+        return ok(Json.toJson(response));
     }
 
-    private static String takeParam(Map<String, String[]> params, String parameter, String def) {
-        String[] param;
-        return (param = params.get(parameter)) == null ? def : param[0];
-    }
+    public static Result indyvidual() {
+        Map<String, String[]> params = request().body().asFormUrlEncoded();
 
-    public static Result mongo(String user) {
-        return ok("dupa");
+        if (!REQUIRED.parallelStream().allMatch(params::containsKey)) {
+            badRequest(REQUIRED.removeAll(params.keySet()) + " fields is required");
+        }
+
+        WSRequestHolder info = WS.url("https://graph.facebook.com/")
+                .setQueryParameter("access_token", params.get(FB_TOKEN)[0])
+                .setQueryParameter("locale", "pl_PL")
+                .setQueryParameter("include_headers", "false");
+
+        ArrayList<Object> queries = new ArrayList<>();
+        QueryFactory queryFactory = QueryFactory.getFactory();
+
+        queries.add(queryFactory.get("me?fields=id,first_name,last_name,age_range"));
+        queries.add(queryFactory.get("me?friends"));
+        queries.add(queryFactory.get("me?friends"));
+        queries.add(queryFactory.get("me/picture?type=large&redirect=false"));
+
+        info.setQueryParameter("batch", Json.toJson(queries).toString());
+
+        WSResponse wsResponse = info.post("").get(TIMEOUT);
+
+        JsonNode responseJson = wsResponse.asJson();
+
+        for (JsonNode node : responseJson) {
+            if (node.get("code").asInt() != 200) {
+                return internalServerError("FB hasn't responded with 200 code on node " + node.toString());
+            }
+        }
+
+        AboutResponse   about   = Json.fromJson(Json.parse(responseJson.get(0).get("body").asText()), AboutResponse.class);
+        PictureResponse picture = Json.fromJson(Json.parse(responseJson.get(1).get("body").asText()).get("data"), PictureResponse.class);
+        Response response = new Response(about, picture);
+
+
+
+        return ok(Json.toJson(response));
     }
 }
