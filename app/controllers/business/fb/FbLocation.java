@@ -1,21 +1,14 @@
-package controllers.fb.business;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
+package controllers.business.fb;
 
 /**
  * Created by Marek on 2015-05-16.
  */
-public class Location {
-//    @JsonProperty("country")
+public class FbLocation {
     private String country;
-//    @JsonProperty("city")
     private String city;
-//    @JsonProperty("street")
     private String street;
-//    @JsonProperty("latitude")
-    private String latitude;
-//    @JsonProperty("longitude")
-    private String longitude;
+    private Float  latitude;
+    private Float  longitude;
 
     public String getCountry() {
         return country;
@@ -41,19 +34,19 @@ public class Location {
         this.street = street;
     }
 
-    public String getLatitude() {
+    public Float getLatitude() {
         return latitude;
     }
 
-    public void setLatitude(String latitude) {
+    public void setLatitude(Float latitude) {
         this.latitude = latitude;
     }
 
-    public String getLongitude() {
+    public Float getLongitude() {
         return longitude;
     }
 
-    public void setLongitude(String longitude) {
+    public void setLongitude(Float longitude) {
         this.longitude = longitude;
     }
 }

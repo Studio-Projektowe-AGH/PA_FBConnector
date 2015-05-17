@@ -1,14 +1,10 @@
-package controllers.fb.business;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
+package controllers.business.fb;
 
 /**
  * Created by Marek on 2015-05-16.
  */
 public class Category {
-//    @JsonProperty("name")
     private String name;
-//    @JsonProperty("if")
     private String id;
 
     public String getName() {

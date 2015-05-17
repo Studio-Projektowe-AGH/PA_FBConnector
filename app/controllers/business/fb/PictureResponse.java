@@ -1,4 +1,4 @@
-package controllers.fb.business;
+package controllers.business.fb;
 
 /**
  * Created by Marek on 2015-05-16.

@@ -1,4 +1,4 @@
-package controllers.fb.business;
+package controllers.business.fb;
 
 /**
  * Created by Marek on 2015-05-16.
@@ -12,8 +12,8 @@ public class AboutResponse {
     private Category[] category_list;
 //    @JsonProperty("about")
     private String about;
-//    @JsonProperty("location")
-    private Location location;
+//    @JsonProperty("fbLocation")
+    private FbLocation fbLocation;
 //    @JsonProperty("website")
     private String website;
 //    @JsonProperty("phone")
@@ -51,12 +51,12 @@ public class AboutResponse {
         this.about = about;
     }
 
-    public Location getLocation() {
-        return location;
+    public FbLocation getFbLocation() {
+        return fbLocation;
     }
 
-    public void setLocation(Location location) {
-        this.location = location;
+    public void setFbLocation(FbLocation fbLocation) {
+        this.fbLocation = fbLocation;
     }
 
     public String getWebsite() {

@@ -1,11 +1,20 @@
 package controllers;
 
+import controllers.business.fb.FbLocation;
+
 /**
  * Created by Marek on 2015-05-16.
  */
 public class Location {
     private String country;
     private String city;
+    private String street;
+
+    public Location(FbLocation fbLocation) {
+        country = fbLocation.getCountry();
+        city = fbLocation.getCity();
+        street = fbLocation.getStreet();
+    }
 
     public String getCountry() {
         return country;
@@ -30,6 +39,4 @@ public class Location {
     public void setStreet(String street) {
         this.street = street;
     }
-
-    private String street;
 }

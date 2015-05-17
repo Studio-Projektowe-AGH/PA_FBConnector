@@ -1,13 +1,19 @@
-package controllers.gp.business;
+package controllers.business.gp;
 
 import controllers.Location;
 import controllers.LocationCoordinates;
-import controllers.fb.business.AboutResponse;
-import controllers.fb.business.Category;
-import controllers.fb.business.PictureResponse;
+import controllers.business.fb.Category;
+import controllers.business.fb.FbLocation;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 /**
  * Created by Marek on 2015-05-16.
+ * GoParty response model
  */
 public class Response {
     private String name;
@@ -19,37 +25,22 @@ public class Response {
     private String[] music_genres;
     private String phone;
     private String picture_url;
-    
+
     public Response() {}
 
-    public Response(AboutResponse about, PictureResponse picture) {
-        setName(about.getName());
-
-        Category[] category_list = about.getCategory_list();
-        String[] new_category_list = new String[category_list.length];
-        for (int i = 0; i < category_list.length; i++) {
-            new_category_list[i] = category_list[i].getName();
-        }
-        setCategory_list(new_category_list);
-
-        setAbout(about.getAbout());
-
-        Location newLocation = new Location();
-        newLocation.setCity(about.getLocation().getCity());
-        newLocation.setCountry(about.getLocation().getCountry());
-        newLocation.setStreet(about.getLocation().getStreet());
-        setLocation(newLocation);
-
-        LocationCoordinates coordinates = new LocationCoordinates();
-        coordinates.setLatitude(about.getLocation().getLatitude());
-        coordinates.setLongitude(about.getLocation().getLongitude());
-        setLocation_coordinates(coordinates);
-
-        setWebsite(about.getWebsite());
-        setMusic_genres(null);
-        setPhone(about.getPhone());
-        setPicture_url(picture.getUrl());
-        }
+    public Response(controllers.business.fb.Response response) {
+        name = response.getName();
+        List<Category> categories = Arrays.asList(response.getCategory_list());
+        category_list = categories.parallelStream().map(Category::getName).toArray(String[]::new);
+        about = response.getAbout();
+        FbLocation fbLocation = response.getLocation();
+        location = new Location(fbLocation);
+        location_coordinates = new LocationCoordinates(fbLocation);
+        website = response.getWebsite();
+        music_genres = null;
+        phone = response.getPhone();
+        picture_url = response.getPicture().getData().getUrl();
+    }
 
     public String getName() {
         return name;
