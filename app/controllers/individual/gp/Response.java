@@ -1,10 +1,14 @@
 package controllers.individual.gp;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import controllers.business.fb.Picture;
 import controllers.individual.fb.Age;
+import controllers.individual.fb.Friends;
 
 /**
  * Created by Marek on 2015-05-16.
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Response {
     private SocialId social_id;
     private String first_name;
@@ -22,9 +26,15 @@ public class Response {
         first_name = response.getFirst_name();
         last_name = response.getLast_name();
         age_range = response.getAge_range();
-        friend_list = response.getFriends().download();
+        Friends friends = response.getFriends();
+        if (friends != null) {
+            friend_list = friends.download();
+        }
         favourite_bands = null;
-        picture_url = response.getPicture().getData().getUrl();
+        Picture picture = response.getPicture();
+        if (picture != null) {
+            picture_url = picture.getData().getUrl();
+        }
     }
 
     public SocialId getSocial_id() {

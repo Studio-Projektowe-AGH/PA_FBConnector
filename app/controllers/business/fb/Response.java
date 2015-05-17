@@ -1,8 +1,11 @@
 package controllers.business.fb;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 /**
  * Created by Marek on 2015-05-16.
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Response {
     private String name;
     private Category[] category_list;
@@ -11,15 +14,6 @@ public class Response {
     private String website;
     private String phone;
     private Picture picture;
-    private String id;
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
 
     public String getName() {
         return name;

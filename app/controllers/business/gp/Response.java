@@ -4,6 +4,7 @@ import controllers.Location;
 import controllers.LocationCoordinates;
 import controllers.business.fb.Category;
 import controllers.business.fb.FbLocation;
+import controllers.business.fb.Picture;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -30,16 +31,24 @@ public class Response {
 
     public Response(controllers.business.fb.Response response) {
         name = response.getName();
-        List<Category> categories = Arrays.asList(response.getCategory_list());
-        category_list = categories.parallelStream().map(Category::getName).toArray(String[]::new);
+        Category[] category_list = response.getCategory_list();
+        if (category_list != null) {
+            List<Category> categories = Arrays.asList(response.getCategory_list());
+            this.category_list = categories.parallelStream().map(Category::getName).toArray(String[]::new);
+        }
         about = response.getAbout();
         FbLocation fbLocation = response.getLocation();
-        location = new Location(fbLocation);
-        location_coordinates = new LocationCoordinates(fbLocation);
+        if (fbLocation != null) {
+            location = new Location(fbLocation);
+            location_coordinates = new LocationCoordinates(fbLocation);
+        }
         website = response.getWebsite();
         music_genres = null;
         phone = response.getPhone();
-        picture_url = response.getPicture().getData().getUrl();
+        Picture picture = response.getPicture();
+        if (picture != null) {
+            picture_url = picture.getData().getUrl();
+        }
     }
 
     public String getName() {

@@ -1,6 +1,7 @@
 package controllers;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import controllers.business.gp.Response;
 import play.libs.Json;
 import play.libs.ws.WS;
@@ -44,16 +45,11 @@ public class Application extends Controller {
 
         controllers.business.fb.Response fbResponse =
                 Json.fromJson(responseJson, controllers.business.fb.Response.class);
-        Response response = new Response(fbResponse);
+        JsonNode response = Json.toJson(new Response(fbResponse));
+        String role = "business";
+        String gpToken = params.get(GP_TOKEN)[0];
 
-        JsonNode jsonUpdate = Json.toJson(response);
-//        WS.url("https://profile-service.herokuapp.com/profiles/business/" + params.get(GP_TOKEN)[0])
-//                .post(jsonUpdate)
-//                .get(TIMEOUT);
-//
-//
-        return ok(jsonUpdate);
-//        return ok(responseJson);
+        return sendUpdate(response, role, gpToken);
     }
 
     public static Result individual() {
@@ -61,7 +57,9 @@ public class Application extends Controller {
         Map<String, String[]> params = request().body().asFormUrlEncoded();
 
         if (!REQUIRED.parallelStream().allMatch(params::containsKey)) {
-            badRequest(REQUIRED.removeAll(params.keySet()) + " fields is required");
+            REQUIRED.removeAll(params.keySet());
+
+            return badRequest(Arrays.toString(REQUIRED.toArray()) + " fields is required");
         }
 
         WSResponse update = getUpdate(fields, params);
@@ -74,16 +72,26 @@ public class Application extends Controller {
 
         controllers.individual.fb.Response fbResponse =
                 Json.fromJson(responseJson, controllers.individual.fb.Response.class);
-        controllers.individual.gp.Response response = new controllers.individual.gp.Response(fbResponse);
+        JsonNode response = Json.toJson(new controllers.individual.gp.Response(fbResponse));
+        String role = "business";
+        String gpToken = params.get(GP_TOKEN)[0];
 
-//        WS.url("https://profile-service.herokuapp.com/profiles/individual" + params.get(GP_TOKEN)[0]);
+        return sendUpdate(response, role, gpToken);
+    }
 
-//        return ok(responseJson);
-        return ok(Json.toJson(response));
+    private static Result sendUpdate(JsonNode response, String role, String gpToken) {
+        WSResponse psResponse = WS.url("https://profile-service.herokuapp.com/profiles/" + role + "/" + gpToken)
+                .post(response)
+                .get(TIMEOUT);
+
+        ObjectNode responses = Json.newObject();
+        responses.put("request", response);
+        responses.put("response", new String(psResponse.asByteArray()));
+        return ok(responses);
     }
 
     private static WSResponse getUpdate(String fields, Map<String, String[]> params) {
-        WSRequestHolder info = WS.url("https://graph.facebook.com/me")
+        WSRequestHolder info = WS.url("https://graph.facebook.com/126260014251")
                 .setQueryParameter("access_token", params.get(FB_TOKEN)[0])
                 .setQueryParameter("locale", "pl_PL")
                 .setQueryParameter("fields", fields);
