@@ -91,7 +91,7 @@ public class Application extends Controller {
     }
 
     private static WSResponse getUpdate(String fields, Map<String, String[]> params) {
-        WSRequestHolder info = WS.url("https://graph.facebook.com/126260014251")
+        WSRequestHolder info = WS.url("https://graph.facebook.com/me")
                 .setQueryParameter("access_token", params.get(FB_TOKEN)[0])
                 .setQueryParameter("locale", "pl_PL")
                 .setQueryParameter("fields", fields);
