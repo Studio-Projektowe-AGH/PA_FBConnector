@@ -1,8 +1,11 @@
 package controllers.individual.fb;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 /**
  * Created by Marek on 2015-05-16.
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class MusicElem implements Value {
     private String category;
 
