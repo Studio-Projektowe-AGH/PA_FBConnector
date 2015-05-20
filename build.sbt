@@ -1,4 +1,4 @@
-name := """dataGatherer"""
+name := """FBConnector"""
 
 version := "1.0-SNAPSHOT"
 
@@ -14,4 +14,4 @@ libraryDependencies ++= Seq(
 )
 
 
-fork in run := true
+fork in run := false
