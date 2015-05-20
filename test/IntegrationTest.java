@@ -19,8 +19,10 @@ public class IntegrationTest {
     public void test() {
         running(testServer(3333, fakeApplication(inMemoryDatabase())), HTMLUNIT, new Callback<TestBrowser>() {
             public void invoke(TestBrowser browser) {
-                browser.goTo("http://localhost:3333");
-                assertThat(browser.pageSource()).contains("Your new application is ready.");
+                browser.fill("fbToken").with("random");
+                browser.fill("paToken").with("random");
+                browser.goTo("http://localhost:3333/update/individual");
+                assertThat(browser.pageSource()).contains("Facebook sie wykrzaczyl");
             }
         });
     }
