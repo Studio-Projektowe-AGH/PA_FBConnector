@@ -1,13 +1,12 @@
-import org.junit.*;
+import org.junit.Test;
+import play.mvc.Result;
+import play.test.FakeRequest;
 
-import play.mvc.*;
-import play.test.*;
-import play.libs.F.*;
+import java.util.HashMap;
+import java.util.Map;
 
+import static org.fest.assertions.Assertions.assertThat;
 import static play.test.Helpers.*;
-import static org.fest.assertions.Assertions.*;
-
-import static org.fluentlenium.core.filter.FilterConstructor.*;
 
 public class IntegrationTest {
 
@@ -17,14 +16,19 @@ public class IntegrationTest {
      */
     @Test
     public void test() {
-        running(testServer(3333, fakeApplication(inMemoryDatabase())), HTMLUNIT, new Callback<TestBrowser>() {
-            public void invoke(TestBrowser browser) {
-                browser.fill("fbToken").with("random");
-                browser.fill("paToken").with("random");
-                browser.goTo("http://localhost:3333/update/individual");
-                assertThat(browser.pageSource()).contains("Facebook sie wykrzaczyl");
-            }
-        });
+        running(fakeApplication(), () -> {
+            Map<String, String> parameters = new HashMap<>();
+            parameters.put("fbToken", "random");
+            parameters.put("gpToken", "random");
+            FakeRequest fakeRequest = fakeRequest(GET, "/update/individual").withFormUrlEncodedBody(parameters);
+
+            System.out.println(fakeRequest);
+            Result result = route(fakeRequest);
+            System.out.println(status(result));
+            assertThat(status(result) == OK);
+            assertThat(status(result) != OK);
+        }
+        );
     }
 
 }
