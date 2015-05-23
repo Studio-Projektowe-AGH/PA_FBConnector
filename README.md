@@ -8,8 +8,11 @@ POST        /update/business
 POST        /update/individual
 
 Ścieżki przyjmują application/x-www-form-urlencoded z polami fbToken i gpToken
+
 W przypadku powodzenia zwracają jsona
+```json
 {
     request:  "request do fb"
     response: "response od serwisu profilowego"
 }
+```
