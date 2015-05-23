@@ -1,6 +1,6 @@
 ### Travis CI [![Build Status](https://travis-ci.org/Studio-Projektowe-AGH/PA_FBConnector.svg)](https://travis-ci.org/Studio-Projektowe-AGH/PA_FBConnector)
 ======
-Host:
+Host: data-gatherer.herokuapp.com
 =================================
 Ścieżki:
 
