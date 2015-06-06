@@ -1,10 +1,13 @@
 package controllers;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import controllers.business.fb.FbLocation;
 
 /**
  * Created by Marek on 2015-05-16.
+ * Mapper for coordignates
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class LocationCoordinates {
     private Float latitude;
     private Float longitude;

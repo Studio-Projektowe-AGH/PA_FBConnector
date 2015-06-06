@@ -1,8 +1,12 @@
 package controllers.individual.gp;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 /**
  * Created by Marek on 2015-05-16.
+ * Mapper for sid
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class SocialId {
     private String social_name;
     private String social_id;

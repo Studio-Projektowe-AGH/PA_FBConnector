@@ -1,13 +1,16 @@
 package controllers.individual.gp;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import controllers.business.fb.Picture;
 import controllers.individual.fb.Age;
 import controllers.individual.fb.Friends;
 
 /**
  * Created by Marek on 2015-05-16.
+ * Reponse converter
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Response {
     private SocialId social_id;

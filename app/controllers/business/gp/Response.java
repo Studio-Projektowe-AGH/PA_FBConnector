@@ -1,21 +1,20 @@
 package controllers.business.gp;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import controllers.Location;
 import controllers.LocationCoordinates;
 import controllers.business.fb.Category;
 import controllers.business.fb.FbLocation;
 import controllers.business.fb.Picture;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
 
 /**
  * Created by Marek on 2015-05-16.
  * GoParty response model
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Response {
     private String name;
     private String[] category_list;

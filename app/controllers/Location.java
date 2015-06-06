@@ -1,10 +1,13 @@
 package controllers;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import controllers.business.fb.FbLocation;
 
 /**
  * Created by Marek on 2015-05-16.
+ * Mapper for location
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Location {
     private String country;
     private String city;
