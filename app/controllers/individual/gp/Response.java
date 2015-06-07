@@ -16,7 +16,8 @@ public class Response {
     private SocialId social_id;
     private String first_name;
     private String last_name;
-    private Age age_range;
+    private Integer age;
+//    private Age age_range;
     private String[] friend_list;
     private String[] favourite_genres;
     private String[] favourite_bands;
@@ -28,7 +29,7 @@ public class Response {
         social_id = new SocialId(response.getId());
         first_name = response.getFirst_name();
         last_name = response.getLast_name();
-        age_range = response.getAge_range();
+        age = response.getAge_range().getMin();
         Friends friends = response.getFriends();
         if (friends != null) {
             friend_list = friends.download();
@@ -64,12 +65,12 @@ public class Response {
         this.last_name = last_name;
     }
 
-    public Age getAge_range() {
-        return age_range;
+    public Integer getAge() {
+        return age;
     }
 
-    public void setAge_range(Age age_range) {
-        this.age_range = age_range;
+    public void setAge(Integer age) {
+        this.age = age;
     }
 
     public String[] getFriend_list() {

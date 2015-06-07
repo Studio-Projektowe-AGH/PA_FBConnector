@@ -17,7 +17,7 @@ import java.util.Map;
 
 public class Application extends Controller {
 
-    private static final long TIMEOUT = 5000;
+    private static final long TIMEOUT = 60000;
     private static final String FB_TOKEN = "fbToken";
     private static final String GP_TOKEN = "gpToken";
     private static final HashSet<String> REQUIRED = new HashSet<>(Arrays.asList(FB_TOKEN, GP_TOKEN));
@@ -73,21 +73,21 @@ public class Application extends Controller {
         controllers.individual.fb.Response fbResponse =
                 Json.fromJson(responseJson, controllers.individual.fb.Response.class);
         JsonNode response = Json.toJson(new controllers.individual.gp.Response(fbResponse));
-        String role = "business";
+        String role = "individual";
         String gpToken = params.get(GP_TOKEN)[0];
 
         return sendUpdate(response, role, gpToken);
     }
 
     private static Result sendUpdate(JsonNode response, String role, String gpToken) {
-        WSResponse psResponse = WS.url("https://profile-service.herokuapp.com/profiles/" + role + "/" + gpToken)
+        WSResponse psResponse = WS.url("https://goparty-profile.herokuapp.com/profiles/" + role + "/" + gpToken)
                 .post(response)
                 .get(TIMEOUT);
 
         ObjectNode responses = Json.newObject();
         responses.put("request", response);
         responses.put("response", new String(psResponse.asByteArray()));
-        return ok(responses);
+        return status(psResponse.getStatus(), responses);
     }
 
     private static WSResponse getUpdate(String fields, Map<String, String[]> params) {
